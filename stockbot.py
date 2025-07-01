@@ -3,9 +3,10 @@ from datetime import datetime
 import os
 from sendmessage import *
 
-# token = 'Bearer t-g10171h0ABLDXOPS25BOCWQ3I5AR4A7K7JEH5EIT'
-app_id = 'cli_a8e81b2f1a38d062'
-app_secret = 'VwY0XK13YWi3tZ40NiWd8bSN8Gtcwsri'
+app_id = os.environ.get("FEISHU_APP_ID")
+app_secret = os.environ.get("FEISHU_APP_SECRET")
+emails_str = os.environ.get("RECIPIENTS", "")
+recipient_emails = emails_str.split(",") if emails_str else []
 
 if __name__ == '__main__':
     filename, save_path = stock_check()
@@ -15,4 +16,5 @@ if __name__ == '__main__':
 
     file_key = upload(token, filename, save_path)
 
-    send_file(token, "mingda@xiaomi.com", file_key)
+    for email in recipient_emails:
+        send_file(token, email, file_key)

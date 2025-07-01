@@ -2,8 +2,6 @@ import json
 import requests
 from requests_toolbelt import MultipartEncoder
 
-token = 'Bearer t-g1016unUFRDEWB5DF6YDUKZVULQ7U6CRSBQLLJQP'
-
 def get_tenant_access_token(app_id, app_secret):
     url = "https://open.f.mioffice.cn/open-apis/auth/v3/tenant_access_token/internal"
     headers = {

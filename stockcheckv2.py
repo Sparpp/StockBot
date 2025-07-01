@@ -75,6 +75,8 @@ def stock_check():
 
     urls = [url for url in df['URL'] if pd.notna(url)]
 
+    urls = urls[:12]
+
     with ProcessPoolExecutor(max_workers=4, initializer=init_worker) as executor:
         results = list(executor.map(checkURLParallel, urls))
 

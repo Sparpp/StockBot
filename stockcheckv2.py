@@ -75,6 +75,8 @@ def stock_check():
 
     urls = [url for url in df['URL'] if pd.notna(url)]
 
+    urls = urls[:12]
+
     with ProcessPoolExecutor(max_workers=4, initializer=init_worker) as executor:
         results = list(executor.map(checkURLParallel, urls))
 
@@ -100,7 +102,7 @@ def stock_check():
     elapsed = end_time - start_time
     print(f"Status column updated successfully in {elapsed:.2f} seconds.")
 
-    return (f"{base}{date}", save_path)
+    return (f"{base}{date}{ext}", save_path)
 
 if __name__ == '__main__':
     start_time = time.time()

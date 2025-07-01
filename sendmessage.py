@@ -75,10 +75,3 @@ def upload(token, filename, filepath):
     response_json = response.json()
 
     return response_json["data"]["file_key"]
-
-
-if __name__ == '__main__':
-    # send(token, "Hello World!")
-    file_key = upload(token, "put filename here.txt", "idk abt filepath")
-
-    send_file(token, "mingda@xiaomi.com", file_key)

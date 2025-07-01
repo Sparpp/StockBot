@@ -85,7 +85,6 @@ def stock_check():
     date = datetime.now().strftime("(%Y-%m-%d)")
 
     base, ext = os.path.splitext(file_path)
-    ext = ".xls"
     save_path = os.path.join("stock_checks", f"{base}{date}{ext}")
 
     # Save

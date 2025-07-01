@@ -25,4 +25,4 @@ jobs:
         env:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-          RECIPIENTS: "mingda@xiaomi.com"
+          RECIPIENTS: "mingda@xiaomi.com, xuzhiwen1@xiaomi.com"

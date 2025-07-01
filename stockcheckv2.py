@@ -4,7 +4,7 @@ import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from datetime import datetime
+from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
@@ -75,6 +75,8 @@ def stock_check():
 
     urls = [url for url in df['URL'] if pd.notna(url)]
 
+    urls = urls[:1]
+
     with ProcessPoolExecutor(max_workers=4, initializer=init_worker) as executor:
         results = list(executor.map(checkURLParallel, urls))
 
@@ -101,3 +103,53 @@ def stock_check():
     print(f"Status column updated successfully in {elapsed:.2f} seconds.")
 
     return (f"{base}{date}{ext}", save_path)
+
+def stock_compare():
+    became_out_of_stock = []
+    became_in_stock = []
+    became_error = []
+    
+    yesterday = datetime.now() - timedelta(days=1)
+    last_date = yesterday.strftime("(%Y-%m-%d)")
+    now_date = datetime.now().strftime("(%Y-%m-%d)")
+
+    base, ext = os.path.splitext("XiaomiStock.xlsx")
+    last_path = os.path.join("stock_checks", f"{base}{last_date}{ext}")
+    now_path = os.path.join("stock_checks", f"{base}{now_date}{ext}")
+
+    # Load the specific sheet
+    df_last = pd.read_excel(last_path, sheet_name="Products")
+    df_now = pd.read_excel(now_path, sheet_name="Products")
+
+    for index in range(len(df_last)):
+        last_status = df_last.at[index, 'Status']
+        now_status = df_now.at[index, 'Status']
+        title = df_now.at[index, 'Title']
+
+        if last_status != now_status:
+            if now_status == "OUT OF STOCK":
+                became_out_of_stock.append(title)
+            elif now_status == "IN STOCK":
+                became_in_stock.append(title)
+            elif now_status == "BUY PAGE ERROR":
+                became_error.append(title)
+
+    output = []
+
+    if not became_out_of_stock and not became_in_stock and not became_error:
+        return "There have been no changes in stock since last check."
+
+    if became_out_of_stock:
+        output.append(
+            "The products that have gone out of stock are: " + ", ".join(became_out_of_stock) + ".\n"
+        )
+    if became_in_stock:
+        output.append(
+            "\nThe products that have come back in stock are: " + ", ".join(became_in_stock) + ".\n"
+        )
+    if became_error:
+        output.append(
+            "\nThe products that are now returning an error are: " + ", ".join(became_error) + "."
+        )
+
+    return " ".join(output)

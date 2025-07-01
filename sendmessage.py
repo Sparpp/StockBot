@@ -21,14 +21,14 @@ def get_tenant_access_token(app_id, app_secret):
         print("Error getting token:", data)
         return None
 
-def send(token, msg):
+def send(token, email, msg):
     url = "https://open.f.mioffice.cn/open-apis/im/v1/messages"
     params = {"receive_id_type":"email"}
     msgContent = {
         "text": msg,
     }
     req = {
-        "receive_id": "mingda@xiaomi.com",
+        "receive_id": email,
         "msg_type": "text",
         "content": json.dumps(msgContent)
     }

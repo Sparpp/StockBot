@@ -30,14 +30,14 @@ def checkURLParallel(url):
     driver.switch_to.window(driver.window_handles[-1])
     try:
         driver.get(urlbuy)
-    except (TimeoutError, ReadTimeoutError):
+    except (TimeoutException, TimeoutError, ReadTimeoutError):
         return (url, "UNKNOWN ERROR")
 
     try:
-        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException, TimeoutError]).until(
+        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException, TimeoutError, ReadTimeoutError]).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/section[1]/div[2]/section/div/button'))
         )
-    except (TimeoutException, TimeoutError):
+    except (TimeoutException, TimeoutError, ReadTimeoutError):
         return (url, "UNKNOWN ERROR")
 
     while(True):

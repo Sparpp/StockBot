@@ -34,7 +34,7 @@ def checkURLParallel(url):
             EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/section[1]/div[2]/section/div/button'))
         )
     except [TimeoutException, TimeoutError]:
-        pass
+        return (url, "UNKNOWN ERROR")
 
     while(True):
         if(len(driver.find_elements(By.XPATH, '//button[text()="Notify Me"]')) != 0):

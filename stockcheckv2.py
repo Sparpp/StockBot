@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime, timedelta
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 from urllib3.exceptions import ReadTimeoutError
@@ -78,7 +78,7 @@ def stock_check():
     urls = [url for url in df['URL'] if pd.notna(url)]
 
     # Use python multiprocessing library to instantiate multiple worker instances to check webpages
-    with ProcessPoolExecutor(max_workers=4, initializer=init_worker) as executor:
+    with ThreadPoolExecutor(max_workers=4, initializer=init_worker) as executor:
         results = list(executor.map(checkURLParallel, urls))
 
     for url, status in results:

@@ -18,6 +18,7 @@ def init_worker():
     options.add_argument("--headless=new")  # run in headless mode
     options.add_argument("--log-level=3")  # suppress console logs
     driver = webdriver.Chrome(options=options)
+    driver.command_executor.set_timeout(1000)
     driver.get("about:blank")
     main_tab = driver.current_window_handle
 

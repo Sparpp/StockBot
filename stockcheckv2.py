@@ -103,8 +103,13 @@ def stock_compare():
     became_in_stock = []
     became_error = []
 
-    yesterday = datetime.now() - timedelta(days=1)
-    last_date = yesterday.strftime("(%Y-%m-%d)")
+    today = datetime.now()
+    if today.weekday() != 0:
+        prevday = today - timedelta(days=1)
+    elif today.weekday() == 0:
+        prevday = today - timedelta(days=3)
+
+    last_date = prevday.strftime("(%Y-%m-%d)")
     now_date = datetime.now().strftime("(%Y-%m-%d)")
 
     base, ext = os.path.splitext("XiaomiStock.xlsx")

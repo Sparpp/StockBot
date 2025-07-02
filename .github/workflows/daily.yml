@@ -1,9 +1,12 @@
 name: Daily Stock Bot
 
 on:
-  schedule:
-    - cron: '43 6 * * *'  # Runs daily at 08:00 GMT on weekdays
   workflow_dispatch:
+    inputs:
+      trigger:
+        description: 'Trigger source'
+        required: false
+        default: ''
 
 jobs:
   run:

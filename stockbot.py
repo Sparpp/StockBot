@@ -24,14 +24,3 @@ if __name__ == '__main__':
     for email in recipient_emails:
         send_file(token, email, file_key)
         send(token, email, summary)
-
-    # delete backfill
-    qiantian = datetime.now() - timedelta(days=2)
-    date = qiantian.strftime("(%Y-%m-%d)")
-    base, ext = os.path.splitext("XiaomiStock.xlsx")
-    delete_path = os.path.join("stock_checks", f"{base}{date}{ext}")
-    if os.path.exists(delete_path):
-        os.remove(delete_path)
-        print(f"Deleted old file: {delete_path}")
-    else:
-        print(f"File not found: {delete_path}")

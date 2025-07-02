@@ -27,7 +27,10 @@ def checkURLParallel(url):
     print(urlbuy)
     driver.execute_script("window.open('');")
     driver.switch_to.window(driver.window_handles[-1])
-    driver.get(urlbuy)
+    try:
+        driver.get(urlbuy)
+    except TimeoutError:
+        return (url, "UNKNOWN ERROR")
 
     try:
         WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException, TimeoutError]).until(

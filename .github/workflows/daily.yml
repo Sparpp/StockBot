@@ -20,24 +20,5 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
       - name: Run main script
-        run: python -m stockbot
-        env:
-          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
-          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-          RECIPIENTS: "mingda@xiaomi.com,xuzhiwen1@xiaomi.com,zhangmingdi@xiaomi.com,liuziyi10@xiaomi.com,liyangyang19@xiaomi.com,wangqingyu1@xiaomi.com,xuxuzhi@xiaomi.com,huchunjie@xiaomi.com,zhuqiancheng@xiaomi.com"
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add stock_checks/XiaomiStock*.xlsx
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "Add stock check for $(date +'%Y-%m-%d')"
-            git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
-          fi
+        run: python -m testing

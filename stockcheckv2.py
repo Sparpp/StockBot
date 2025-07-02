@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, TimeoutError
 import time
 
 def init_worker():
@@ -30,10 +30,10 @@ def checkURLParallel(url):
     driver.get(urlbuy)
 
     try:
-        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException]).until(
+        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException, TimeoutError]).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/section[1]/div[2]/section/div/button'))
         )
-    except TimeoutException:
+    except [TimeoutException, TimeoutError]:
         pass
 
     while(True):

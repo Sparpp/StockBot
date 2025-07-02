@@ -33,7 +33,7 @@ def checkURLParallel(url):
         WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException, TimeoutError]).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/section[1]/div[2]/section/div/button'))
         )
-    except [TimeoutException, TimeoutError]:
+    except (TimeoutException, TimeoutError):
         return (url, "UNKNOWN ERROR")
 
     while(True):

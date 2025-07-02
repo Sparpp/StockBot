@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import TimeoutException, TimeoutError
+from selenium.common.exceptions import TimeoutException
 import time
 
 def init_worker():

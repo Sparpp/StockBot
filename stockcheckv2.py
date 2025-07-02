@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
+from urllib3.exceptions import ReadTimeoutError
 import time
 
 def init_worker():
@@ -29,7 +30,7 @@ def checkURLParallel(url):
     driver.switch_to.window(driver.window_handles[-1])
     try:
         driver.get(urlbuy)
-    except TimeoutError:
+    except (TimeoutError, ReadTimeoutError):
         return (url, "UNKNOWN ERROR")
 
     try:

@@ -8,23 +8,14 @@ from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from urllib3.exceptions import ReadTimeoutError
 import time
 
 options = Options()
-options.add_argument("--headless=new")   # important for GitHub Actions
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+# options.add_argument("--headless=new")  # run in headless mode
 options.add_argument("--disable-gpu")
 options.add_argument("--log-level=3")  # suppress console logs
-
-driver = webdriver.Chrome(
-    service=Service(ChromeDriverManager().install()),
-    options=options
-)
+driver = webdriver.Chrome(options=options)
 driver.command_executor.set_timeout(1000)
 driver.get("about:blank")
 

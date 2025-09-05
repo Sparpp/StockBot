@@ -22,6 +22,11 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+      
+      - name: Check Versions
+        run: |
+          google-chrome --version
+          chromedriver --version
 
       - name: Run main script
         run: python -m stockbot

@@ -14,24 +14,25 @@ from webdriver_manager.chrome import ChromeDriverManager
 from urllib3.exceptions import ReadTimeoutError
 import time
 
-options = Options()
-options.add_argument("--headless=new")   # important for GitHub Actions
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--disable-gpu")
-options.add_argument("--log-level=3")  # suppress console logs
-options.add_argument("--disable-blink-features=AutomationControlled")
-options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139 Safari/537.36")
+def init_driver():
+    global driver
+    global main_tab
+    options = Options()
+    options.add_argument("--headless=new")   # important for GitHub Actions
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--log-level=3")  # suppress console logs
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139 Safari/537.36")
 
-
-
-driver = webdriver.Chrome(
-    service=Service(ChromeDriverManager().install()),
-    options=options
-)
-driver.command_executor.set_timeout(100)
-driver.get("about:blank")
-main_tab = driver.current_window_handle
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()),
+        options=options
+    )
+    driver.command_executor.set_timeout(100)
+    driver.get("about:blank")
+    main_tab = driver.current_window_handle
 
 def checkURL(url):
     print("before globals")
@@ -103,6 +104,7 @@ def checkURL(url):
 
 def stock_check():
     print("entered stock_check")
+    init_driver()
 
     start_time = time.time()
 

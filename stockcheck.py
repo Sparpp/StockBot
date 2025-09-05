@@ -34,10 +34,8 @@ driver.get("about:blank")
 main_tab = driver.current_window_handle
 
 def checkURL(url):
-    print("before globals")
     global driver
     global main_tab
-    print("after globals")
     urlbuy = url + "buy"
     print(urlbuy)
     driver.execute_script("window.open('');")
@@ -102,7 +100,7 @@ def checkURL(url):
 #         df.at[index, 'Status'] = ""
 
 def stock_check():
-    print("entered stock_check")
+    
 
     start_time = time.time()
 
@@ -110,15 +108,12 @@ def stock_check():
     sheet_name = "Products"
 
     df = pd.read_excel(file_path, sheet_name=sheet_name)
-    print("read dataframe")
 
     urls = [url for url in df['URL'] if pd.notna(url)]
 
     results = []
     for url in urls:
-        print("checking first url")
         status = checkURL(url)   # directly call your function
-        print("first url checked")
         results.append((url, status))
 
     for url, status in results:

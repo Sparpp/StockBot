@@ -20,27 +20,37 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
 options.add_argument("--log-level=3")  # suppress console logs
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139 Safari/537.36")
+
+
 
 driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install()),
     options=options
 )
-driver.command_executor.set_timeout(1000)
+driver.command_executor.set_timeout(100)
 driver.get("about:blank")
+main_tab = driver.current_window_handle
 
-def checkURL(url, driver):
-    url += "buy"
-    print(url)
+def checkURL(url):
+    global driver
+    global main_tab
+    urlbuy = url + "buy"
+    print(urlbuy)
     driver.execute_script("window.open('');")
     driver.switch_to.window(driver.window_handles[-1])
-    driver.get(url)
+    try:
+        driver.get(urlbuy)
+    except (TimeoutException, TimeoutError, ReadTimeoutError):
+        return (url, "UNKNOWN ERROR")
 
     try:
-        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException]).until(
+        WebDriverWait(driver, 12, ignored_exceptions=[TimeoutException, TimeoutError, ReadTimeoutError]).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/section[1]/div[2]/section/div/button'))
         )
-    except TimeoutException:
-        pass  # ignore and continue
+    except (TimeoutException, TimeoutError, ReadTimeoutError):
+        return (url, "BUY PAGE ERROR")
 
     while(True):
         if(len(driver.find_elements(By.XPATH, '//button[text()="Notify Me"]')) != 0):
@@ -67,29 +77,31 @@ def checkURL(url, driver):
 
     driver.switch_to.window(main_tab)
 
-    return out
+    return (url, out)
 
-start_time = time.time()
+# start_time = time.time()
 
-driver.get("about:blank")
-main_tab = driver.current_window_handle
+# driver.get("about:blank")
+# main_tab = driver.current_window_handle
 
-# Load the Excel file
-file_path = "XiaomiStock.xlsx"  # Replace with the path to your local file
-sheet_name = "Products"
+# # Load the Excel file
+# file_path = "XiaomiStock.xlsx"  # Replace with the path to your local file
+# sheet_name = "Products"
 
-# Load the specific sheet
-df = pd.read_excel(file_path, sheet_name=sheet_name)
+# # Load the specific sheet
+# df = pd.read_excel(file_path, sheet_name=sheet_name)
 
-for index in range(len(df)):
-    url = df.at[index, 'URL']
+# for index in range(len(df)):
+#     url = df.at[index, 'URL']
 
-    if pd.notna(url):
-        df.at[index, 'Status'] = checkURL(url, driver)
-    else:
-        df.at[index, 'Status'] = ""
+#     if pd.notna(url):
+#         df.at[index, 'Status'] = checkURL(url, driver)
+#     else:
+#         df.at[index, 'Status'] = ""
 
 def stock_check():
+    
+
     start_time = time.time()
 
     file_path = "XiaomiStock.xlsx"
@@ -102,6 +114,7 @@ def stock_check():
     results = []
     for url in urls:
         status = checkURL(url)   # directly call your function
+        print(status)
         results.append((url, status))
 
     for url, status in results:

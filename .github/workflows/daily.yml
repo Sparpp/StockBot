@@ -25,8 +25,8 @@ jobs:
       
       - name: Check Versions
         run: |
-          google-chrome --version
-          chromedriver --version
+          which google-chrome
+          which chromedriver
 
       - name: Run main script
         run: python -m stockbot

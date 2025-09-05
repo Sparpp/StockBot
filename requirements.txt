@@ -3,3 +3,4 @@ pandas
 openpyxl
 selenium
 requests-toolbelt
+webdriver-manager

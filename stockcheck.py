@@ -114,7 +114,6 @@ def stock_check():
     results = []
     for url in urls:
         status = checkURL(url)   # directly call your function
-        print(status)
         results.append((url, status))
 
     for url, status in results:

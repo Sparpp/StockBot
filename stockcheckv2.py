@@ -15,8 +15,10 @@ def init_worker():
     global driver
     global main_tab
     options = Options()
-    # options.add_argument("--headless=new")  # run in headless mode
+    options.add_argument("--headless=new")  # run in headless mode
     options.add_argument("--log-level=3")  # suppress console logs
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139 Safari/537.36")
     driver = webdriver.Chrome(options=options)
     driver.command_executor.set_timeout(1000)
     driver.get("about:blank")

@@ -1,4 +1,4 @@
-from stockcheck import *
+from stockcheckv2 import *
 from sendmessage import *
 
 app_id = os.environ.get("FEISHU_APP_ID")

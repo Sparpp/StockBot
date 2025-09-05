@@ -16,8 +16,6 @@ options = Options()
 options.add_argument("--disable-gpu")
 options.add_argument("--log-level=3")  # suppress console logs
 driver = webdriver.Chrome(options=options)
-driver.command_executor.set_timeout(1000)
-driver.get("about:blank")
 
 def checkURL(url, driver):
     url += "buy"

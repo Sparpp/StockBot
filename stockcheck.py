@@ -11,35 +11,25 @@ from selenium.common.exceptions import TimeoutException
 from urllib3.exceptions import ReadTimeoutError
 import time
 
-def init_worker():
-    global driver
-    global main_tab
-    options = Options()
-    # options.add_argument("--headless=new")  # run in headless mode
-    options.add_argument("--log-level=3")  # suppress console logs
-    driver = webdriver.Chrome(options=options)
-    driver.command_executor.set_timeout(1000)
-    driver.get("about:blank")
-    main_tab = driver.current_window_handle
+options = Options()
+# options.add_argument("--headless=new")  # run in headless mode
+options.add_argument("--disable-gpu")
+options.add_argument("--log-level=3")  # suppress console logs
+driver = webdriver.Chrome(options=options)
 
-def checkURLParallel(url):
-    global driver
-    global main_tab
-    urlbuy = url + "buy"
-    print(urlbuy)
+def checkURL(url, driver):
+    url += "buy"
+    print(url)
     driver.execute_script("window.open('');")
     driver.switch_to.window(driver.window_handles[-1])
-    try:
-        driver.get(urlbuy)
-    except (TimeoutException, TimeoutError, ReadTimeoutError):
-        return (url, "UNKNOWN ERROR")
+    driver.get(url)
 
     try:
-        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException, TimeoutError, ReadTimeoutError]).until(
+        WebDriverWait(driver, 2, ignored_exceptions=[TimeoutException]).until(
             EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[1]/section[1]/div[2]/section/div/button'))
         )
-    except (TimeoutException, TimeoutError, ReadTimeoutError):
-        return (url, "UNKNOWN ERROR")
+    except TimeoutException:
+        pass  # ignore and continue
 
     while(True):
         if(len(driver.find_elements(By.XPATH, '//button[text()="Notify Me"]')) != 0):
@@ -66,7 +56,27 @@ def checkURLParallel(url):
 
     driver.switch_to.window(main_tab)
 
-    return (url, out)
+    return out
+
+start_time = time.time()
+
+driver.get("about:blank")
+main_tab = driver.current_window_handle
+
+# Load the Excel file
+file_path = "XiaomiStock.xlsx"  # Replace with the path to your local file
+sheet_name = "Products"
+
+# Load the specific sheet
+df = pd.read_excel(file_path, sheet_name=sheet_name)
+
+for index in range(len(df)):
+    url = df.at[index, 'URL']
+
+    if pd.notna(url):
+        df.at[index, 'Status'] = checkURL(url, driver)
+    else:
+        df.at[index, 'Status'] = ""
 
 def stock_check():
     start_time = time.time()
@@ -78,9 +88,10 @@ def stock_check():
 
     urls = [url for url in df['URL'] if pd.notna(url)]
 
-    # Use python multiprocessing library to instantiate multiple worker instances to check webpages
-    with ProcessPoolExecutor(max_workers=4, initializer=init_worker) as executor:
-        results = list(executor.map(checkURLParallel, urls))
+    results = []
+    for url in urls:
+        status = checkURL(url)   # directly call your function
+        results.append((url, status))
 
     for url, status in results:
         df.loc[df['URL'] == url, 'Status'] = status
